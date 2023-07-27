@@ -52,25 +52,25 @@
     1) Add `python2.7` to `packages.txt`
     2) Add `__init__.py` to `include`
 9) **IsolatedOperator**
-    1) Add the following to your `Dockerfile`
+    1) Add the following to your **child** `Dockerfile`
         ```
         # Install system-level packages
-        ONBUILD COPY packages.txt .
-        ONBUILD USER root
-        ONBUILD RUN if [[ -s packages.txt ]]; then \
+        COPY packages.txt .
+        USER root
+        RUN if [[ -s packages.txt ]]; then \
             apt-get update && cat packages.txt | tr '\r\n' '\n' | sed -e 's/#.*//' | xargs apt-get install -y --no-install-recommends \
             && apt-get clean \
             && rm -rf /var/lib/apt/lists/*; \
           fi
  
         # Install python packages
-        ONBUILD COPY requirements.txt .
-        ONBUILD RUN if grep -Eqx 'apache-airflow\s*[=~>]{1,2}.*' requirements.txt; then \
+        COPY requirements.txt .
+        RUN if grep -Eqx 'apache-airflow\s*[=~>]{1,2}.*' requirements.txt; then \
             echo >&2 "Do not upgrade by specifying 'apache-airflow' in your requirements.txt, change the base image instead!";  exit 1; \
           fi; \
           pip install --no-cache-dir --root-user-action=ignore -r requirements.txt
-        ONBUILD USER astro
+        USER astro
        ```
     2) run a docker registry locally `docker run -d -p 5000:5000 --restart=always --name registry registry:2`
-    3) Build and push parent (with `astro` cli) and children (with docker) via `sh build_all.sh -r localhost:5000`
+    3) Build and push **parent** Docker image (with `astro` cli) and **children** images (with docker directly) via `sh build_all.sh -r localhost:5000`
 10) **Start the project** `astro dev start` 
