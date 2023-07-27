@@ -1,0 +1,15 @@
+deployment:
+    configuration:
+        name: dependency_isolation_in_airflow
+        runtime_version: 8.7.0
+        cluster_name: "ADE GCP Cluster - Dev"
+        dag_deploy_enabled: false
+        executor: KubernetesExecutor
+        scheduler_au: 5
+        scheduler_count: 1
+        workspace_name: Fritz Test
+        ci_cd_enforcement: false
+        pod_cpu: 1
+        pod_memory: 2
+    alert_emails:
+        - fritz@astronomer.io
