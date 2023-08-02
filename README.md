@@ -1,5 +1,6 @@
 # Dependency Isolation in Airflow
 
+
 ## Fitness Tests
 
 1) Run a SQL Operator with an Airflow Connection, return results as an XCOM, and use an Airflow Template in the SQL
@@ -9,14 +10,29 @@
 5) Do #4 in python2.7
 6) Combine the #4 + #5 via consuming an XCOM and print if they match
 
+### Restrictions for tests
+- Cannot use volumes or complex knowledge of underlying implementation (e.g. kubernetes)
+- Test fails if the "solution" is effectively recreating one of the other solutions in a worse/more complex way
+
 ### Results
 
-| Test             | #1  | #2      | #3  | #4  | #5      | #6  |
-|------------------|-----|---------|-----|-----|---------|-----|
-| Vanilla          | ✔️  | ❌       | ✔️  | ✔️  | ❌, ✔️ ️ | ✔️  |
-| EPO              | ✔️  | ✔️ , ⚠️ | ✔️  | ✔️  | ⚠️      | ✔️  |
-| KPO              |     |         |     |     |         |     |
-| IsolatedOperator |     |         |     |     |         |     |
+| Test             | #1   | #2    | #3  | #4   | #5    | #6  |
+|------------------|------|-------|-----|------|-------|-----|
+| Vanilla          | ✔️   | ❌     | ✔️  | ✔️   | ❌,✔️️ | ✔️  |
+| EPO              | 🔎️  | ✔️,⚠️ | 🔎  | ✔️   | ⚠️    | 🔎  |
+| KPO              | ❌,✔️ | ❌     | ✔️  | ❌,️❌ | ❌     | ❌   |
+| IsolatedOperator | 🔎   | ✔️ ⏳  | 🔎  | ⚠️⏳  | ⚠️⏳   | 🔎  |
+
+#### Labels
+
+| Icon | Meaning                  |
+|------|--------------------------|
+| 🔎️  | Refer to Vanilla Impl    |
+| ✔️   | Works                    |
+| ❌    | Cannot work              |
+| ⚠️   | Works with caveats       |
+| ⏳    | Can work with dev effort |
+
 
 ## Setup Steps
 
